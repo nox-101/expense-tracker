@@ -1,402 +1,206 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Points & Cash Manager</title>
-<style>
-:root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#687386;--line:#e4e9f0;--primary:#1769e0;--primary2:#0e56bf;--danger:#d92d20;--green:#078a55;--shadow:0 8px 25px rgba(24,39,75,.08);--radius:16px}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}.app{max-width:1150px;margin:auto;padding:14px}
-.header{background:linear-gradient(135deg,#1769e0,#0b4ca9);color:#fff;border-radius:20px;padding:18px;box-shadow:var(--shadow)}.header h1{font-size:22px;margin:0 0 5px}.header p{margin:0;opacity:.88;font-size:13px}
-.tabs{display:flex;gap:8px;margin:14px 0;overflow:auto}.tab{border:0;background:#fff;color:#4d5a70;padding:11px 15px;border-radius:12px;font-weight:700;white-space:nowrap}.tab.active{background:var(--primary);color:#fff}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.section-title{font-size:17px;font-weight:800;margin:0 0 14px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.field label,.calc-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px}
-input,select{width:100%;height:44px;border:1px solid #cfd7e3;border-radius:11px;padding:0 11px;background:#fff;color:var(--text);outline:none}input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(23,105,224,.1)}
-input[readonly]{background:#f5f7fa}.calc{background:#f6f9ff;border:1px solid #d9e5fb}.calc .value{font-size:19px;font-weight:800}.calc small{color:var(--muted);display:block;margin-top:4px}
-.profitbox{background:#fff;border:1px solid #dbe5f4;border-radius:13px;padding:13px}.profit-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 0}.profit-row+.profit-row{border-top:1px solid var(--line)}.profit-title{font-size:12px;color:var(--muted);font-weight:700}.profit-number{font-size:18px;font-weight:800}
-.toggle{display:flex;align-items:center;gap:9px;margin-top:10px;font-size:12px;font-weight:800}.toggle input{width:20px;height:20px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.btn{border:0;border-radius:11px;padding:12px 16px;font-weight:800;cursor:pointer}.btn.primary{background:var(--primary);color:#fff}.btn.primary:hover{background:var(--primary2)}.btn.secondary{background:#edf2f8;color:#25324a}.btn.danger{background:#feeceb;color:var(--danger)}
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.summary .box{background:#f8fafc;border:1px solid var(--line);border-radius:13px;padding:12px}.summary .label{font-size:11px;color:var(--muted);font-weight:700}.summary .num{font-size:18px;font-weight:800;margin-top:4px}
-.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px}table{width:100%;border-collapse:collapse;min-width:1250px;background:#fff}th,td{padding:10px 9px;border-bottom:1px solid var(--line);font-size:12px;text-align:right;white-space:nowrap}th{background:#f5f7fa;color:#526075}th:first-child,td:first-child{text-align:left}td.name{text-align:left;font-weight:700}.positive{color:var(--green);font-weight:800}.negative{color:var(--danger);font-weight:800}.empty{text-align:center;padding:35px;color:var(--muted)}
-.note{font-size:12px;color:var(--muted);line-height:1.5}.setting-row{display:flex;gap:8px;margin-bottom:9px}.setting-row input{flex:1}.hidden{display:none}.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#eef5ff;color:#1769e0;font-size:11px;font-weight:800}
-@media(max-width:760px){.app{padding:10px}.header{border-radius:16px}.grid{grid-template-columns:1fr 1fr}.summary{grid-template-columns:1fr 1fr}.card{padding:13px}}
-@media(max-width:430px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.btn{flex:1}}
-</style>
-</head>
-<body>
-<div class="app">
-<div class="header"><h1>Points & Cash Manager</h1><p>Daily entry, automatic calculations & history</p></div>
-<div class="tabs"><button class="tab active" data-tab="entry">New Entry</button><button class="tab" data-tab="history">Daily History</button><button class="tab" data-tab="expenses">Expenses</button><button class="tab" data-tab="settings">Settings</button></div>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account Manager</title><style>
+body{font-family:Arial;margin:0;background:#f4f7fb;color:#172033}.app{max-width:1050px;margin:auto;padding:12px}.head{background:#1769e0;color:#fff;padding:18px;border-radius:16px}.tabs{display:flex;gap:8px;margin:12px 0;overflow:auto}.tab,button{border:0;border-radius:10px;padding:10px 14px;font-weight:700}.tab{background:#fff}.active,.primary{background:#1769e0;color:#fff}.card{background:#fff;padding:15px;border-radius:14px;margin-bottom:12px;box-shadow:0 5px 18px #0001}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px;color:#687386}input,select{width:100%;height:42px;border:1px solid #ccd5e2;border-radius:9px;padding:0 9px;box-sizing:border-box}.actions{margin-top:12px;display:flex;gap:8px}.danger{background:#feeceb;color:#d92d20}.secondary{background:#edf2f8}.total{font-size:25px;font-weight:800}.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{padding:9px;border-bottom:1px solid #e3e8ef;text-align:right;font-size:12px}th:first-child,td:first-child{text-align:left}th{background:#f5f7fa}.hidden{display:none}.row{display:flex;gap:8px;margin-bottom:8px}.row input{flex:1}.note{font-size:12px;color:#687386}@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:430px){.grid{grid-template-columns:1fr}}
+</style></head><body><div class="app">
+<div class="head"><h2>Account Deposit & Withdrawal Manager</h2><small>Account-wise balance, transactions and expenses</small></div>
+<div class="tabs"><button class="tab active" data-p="home">Home</button><button class="tab" data-p="summary">Account Summary</button><button class="tab" data-p="expenses">Expenses</button><button class="tab" data-p="settings">Settings</button></div>
 
-<section id="entry" class="tab-page">
-<div class="card">
-<div class="section-title">Daily Entry <span id="editBadge" class="badge hidden">Editing</span></div>
-<div class="grid">
+<section id="home">
+<div class="card"><b>Total Account Balance</b><div class="total" id="grand">₹0.00</div></div>
+<div class="card"><h3>New Transaction</h3><div class="grid">
 <div class="field"><label>Date</label><input id="date" type="date"></div>
-<div class="field"><label>Account Name</label><select id="account"></select></div>
-<div class="field"><label>Points Available</label><input id="pointsAvailable" type="number" step="any" min="0" placeholder="First entry only"></div>
-<div class="field"><label>Cash Available</label><input id="cashAvailable" type="number" step="any" readonly></div>
-<div class="field"><label>Cash Per Point</label><input id="cashPerPoint" type="number" step="any" min="0" placeholder="0"></div>
-<div class="field"><label>Cash Deposit</label><input id="cashDeposit" type="number" step="any" min="0" placeholder="0"></div>
-<div class="field"><label>Company Commission on Cash Deposit (%)</label><input id="cashDepositCommission" type="number" step="any" min="0" placeholder="0"></div>
-<div class="field"><label>Cash Withdrawn</label><input id="cashWithdrawn" type="number" step="any" min="0" placeholder="0"></div>
-<div class="field"><label>Point Deposit Rate</label><input id="pointDepositRate" type="number" step="any" min="0" placeholder="0"></div>
-<div class="field"><label>Cash Points Deposited</label><input id="cashPointsDeposited" type="number" step="any" min="0" placeholder="Cash amount"></div>
-<div class="field"><label>Company Commission on Cash Points (%)</label><input id="cashPointsCommission" type="number" step="any" min="0" placeholder="0"></div>
-</div>
-</div>
+<div class="field"><label>Account Name</label><select id="acc"></select></div>
+<div class="field"><label>Deposit</label><input id="dep" type="number" step="any"></div>
+<div class="field"><label>Withdraw</label><input id="withd" type="number" step="any"></div>
+</div><div class="actions"><button class="primary" id="save">Save</button><button class="secondary" id="clear">Clear</button></div></div>
+<div class="card"><h3>Transaction History</h3><div class="table"><table><thead><tr><th>Date</th><th>Account</th><th>Deposit</th><th>Withdraw</th><th>Balance After</th><th>Action</th></tr></thead><tbody id="tx"></tbody></table></div></div>
+</section>
 
-<div class="card calc">
-<div class="section-title">Automatic Calculations</div>
+<section id="summary" class="hidden"><div class="card"><h3>Account-wise Summary</h3><div class="table"><table><thead><tr><th>Account Name</th><th>Available Balance</th><th>Total Deposit</th><th>Total Withdraw</th><th>Transactions</th><th>Status</th></tr></thead><tbody id="sum"></tbody></table></div><p class="note">Deleting an account removes only its dropdown entry. Its old summary remains. Re-adding the same name creates a new account with ₹0 balance.</p></div></section>
+
+<section id="expenses" class="hidden">
+<div class="card"><b>Total Expense</b><div class="total" id="totalExp">₹0.00</div></div>
+<div class="card"><h3>Expense</h3><div class="grid"><div class="field"><label>Date</label><input id="edate" type="date"></div><div class="field"><label>Expense Name</label><select id="ename"></select></div><div class="field"><label>Amount</label><input id="eamt" type="number" step="any"></div></div><div class="actions"><button class="primary" id="esave">Save Expense</button><button class="secondary" id="eclear">Clear</button></div></div>
+<div class="card"><h3>Expense History</h3><div class="table"><table><thead><tr><th>Date</th><th>Expense Name</th><th>Amount</th><th>Action</th></tr></thead><tbody id="ex"></tbody></table></div></div>
+</section>
+
+<section id="settings" class="hidden">
+<div class="card"><h3>Account Names</h3><div id="accounts"></div><div class="row"><input id="newAcc" placeholder="Account name"><button class="primary" id="addAcc">Add</button></div><p class="note">Old transactions remain after deletion. A re-added same-name account is a new account.</p></div>
+<div class="card"><h3>Expense Names</h3><div id="enames"></div><div class="row"><input id="newEN" placeholder="Expense name"><button class="primary" id="addEN">Add</button></div></div>
+<div class="card"><h3>Google Sheets Sync</h3>
 <div class="grid">
-<div><div class="calc-label">Points of Cash</div><div class="value" id="pointsOfCash">0</div><small>Cash Deposit ÷ Cash Per Point</small></div>
-<div><div class="calc-label">Remaining Points</div><div class="value" id="remainingPoints">0</div><small>Points Available − Points of Cash</small></div>
-<div><div class="calc-label">Points From Cash Points Deposited</div><div class="value" id="pointsFromDeposit">0</div><small>Cash Points Deposited ÷ Point Deposit Rate</small></div>
-<div><div class="calc-label">Total Points</div><div class="value" id="totalPoints">0</div><small>Remaining Points + Points From Deposit</small></div>
-<div><div class="calc-label">Cash Deposit Commission</div><div class="value" id="cashDepositCommissionValue">₹0</div><small>Cash Deposit × Commission %</small></div>
-<div><div class="calc-label">Cash Points Commission</div><div class="value" id="cashPointsCommissionValue">₹0</div><small>Cash Points Deposited × Commission %</small></div>
-<div><div class="calc-label">Cash Available</div><div class="value" id="cashAvailableView">₹0</div><small>Same account previous balance + deposit − withdrawn</small></div>
-<div>
-<div class="calc-label">Profit</div>
-<div class="profitbox">
-<div class="profit-row"><span class="profit-title">Cash Profit</span><span class="profit-number positive" id="cashProfit">₹0</span></div>
-<div class="profit-row"><span class="profit-title">Points Profit / Loss</span><span class="profit-number" id="pointsProfit">Not shown</span></div>
-<div class="profit-row hidden" id="pointsValueRow"><span class="profit-title">Points Profit/Loss × Point Deposit Rate</span><span class="profit-number" id="pointsValue">₹0</span></div>
-<label class="toggle"><input id="usingPoints" type="checkbox"> Using Points</label>
+<div class="field" style="grid-column:span 3"><label>Google Apps Script Web App URL</label><input id="syncUrl" type="url"></div>
+<div class="field"><label>Token (if your Apps Script uses one)</label><input id="syncToken" type="text"></div>
 </div>
+<div class="actions"><button class="primary" id="syncNow">Read from Sheet</button></div>
+<p class="note" id="syncStatus">Starting: Sheet will be read before any write.</p>
 </div>
-</div>
-<div class="actions"><button class="btn primary" id="saveBtn">Save Entry</button><button class="btn secondary" id="resetBtn">Clear</button></div>
-<p class="note"><b>Points:</b> पहली entry में Points Available आप भरेंगे। उसके बाद chronological entries में पिछली entry का Total Points अपने-आप Points Available बनेगा, account चाहे कोई भी हो. <b>Points Profit/Loss</b> = current/latest Total Points − first entry के opening points. <b>Cash Available</b> केवल उसी Account Name के लिए carry forward होगा.</p>
-</div>
-</section>
-
-<section id="history" class="tab-page hidden">
-<div class="card">
-<div class="section-title">Daily History</div>
-<div class="summary" id="summary"></div>
-<div class="actions"><input id="historyDate" type="date" style="max-width:190px"><select id="historyAccount" style="max-width:220px"></select><button class="btn secondary" id="clearFilter">All</button></div>
-<div style="height:12px"></div>
-<div class="table-wrap"><table><thead><tr>
-<th>Date</th><th>Account</th><th>Points Available</th><th>Cash Available</th><th>Cash/Point</th><th>Cash Deposit</th><th>Cash Withdrawn</th><th>Points of Cash</th><th>Point Deposit Rate</th><th>Cash Points Deposited</th><th>Points From Deposit</th><th>Total Points</th><th>Cash Profit</th><th>Points Profit/Loss</th><th>Points Value</th><th>Action</th>
-</tr></thead><tbody id="historyBody"></tbody></table></div>
-</div>
-</section>
-
-<section id="expenses" class="tab-page hidden">
-<div class="card">
-<div class="section-title">Expenses</div>
-<div class="grid">
-<div class="field"><label>Date</label><input id="expenseDate" type="date"></div>
-<div class="field"><label>Expense Name</label><select id="expenseName"></select></div>
-<div class="field"><label>Amount</label><input id="expenseAmount" type="number" step="any" min="0" placeholder="0"></div>
-</div>
-<div class="actions"><button class="btn primary" id="saveExpenseBtn">Save Expense</button><button class="btn secondary" id="clearExpenseBtn">Clear</button></div>
-</div>
-<div class="card">
-<div class="section-title">Expense Summary</div>
-<div class="summary" id="expenseSummary"></div>
-<p class="note">Cash Remaining = Total Cash Profit − Total Expenses. This amount is shown only on this Expenses page. Daily History's Total Cash Profit always remains the gross cash profit and is not reduced by expenses.</p>
-</div>
-<div class="card">
-<div class="section-title">Expense History</div>
-<div class="actions"><input id="expenseHistoryDate" type="date" style="max-width:190px"><button class="btn secondary" id="clearExpenseFilter">All</button></div>
-<div style="height:12px"></div>
-<div class="table-wrap"><table style="min-width:650px"><thead><tr><th>Date</th><th>Expense Name</th><th>Amount</th><th>Action</th></tr></thead><tbody id="expenseBody"></tbody></table></div>
-</div>
-</section>
-
-<section id="settings" class="tab-page hidden">
-<div class="card"><div class="section-title">Account Names</div><div id="accountsList"></div><div class="setting-row"><input id="newAccount" placeholder="New account name"><button class="btn primary" id="addAccount">Add</button></div><p class="note">Deleting an account name removes it only from the dropdown. Its saved entries/history remain unchanged.</p></div>
-<div class="card"><div class="section-title">Points Available Setting</div><div class="field"><label>Opening / Base Points Balance</label><input id="openingPointsSetting" type="number" step="any" min="0"><div class="actions"><button class="btn primary" id="saveOpeningPointsBtn">Save Points Balance</button></div></div><p class="note">Ye value nayi Points calculation chain ka starting balance hai. Isse change karne par purani entries bilkul same rahengi; iske baad save ki gayi entries is naye balance se calculate hongi.</p></div>
-<div class="card"><div class="section-title">Expense Names</div><div id="expenseNamesList"></div><div class="setting-row"><input id="newExpenseName" placeholder="New expense name"><button class="btn primary" id="addExpenseName">Add</button></div><p class="note">Expense names added here appear in the Expenses dropdown. Deleting a name does not delete old expense entries.</p></div>
-<div class="card"><div class="section-title">Google Sheets Sync</div><div class="grid">
-<div class="field"><label>Google Apps Script Web App URL</label><input id="cloudUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
-<div class="field"><label>Token</label><input id="cloudToken" type="password" placeholder="Your token"></div>
-</div><div class="actions"><button class="btn primary" id="connectCloudBtn">Save & Load from Google Sheet</button><button class="btn secondary" id="syncCloudBtn">Sync Now</button></div><p id="cloudStatus" class="note">Google Sheets not connected.</p><p class="note">When connected, entries, expenses, account names and expense names are saved to Google Sheets and loaded from there when the app opens.</p></div>
-<div class="card"><div class="section-title">Backup</div><p class="note">Local backup is also available. Google Sheets can be used as the main saved copy when connected.</p><div class="actions"><button class="btn secondary" id="exportBtn">Export Backup</button><button class="btn secondary" id="importBtn">Import Backup</button><input id="importFile" type="file" accept=".json" class="hidden"></div></div>
-</section>
-</div>
-
+<div class="card"><h3>Backup</h3><button class="secondary" id="export">Export</button> <button class="secondary" id="importBtn">Import</button><input id="file" type="file" accept=".json" style="display:none"></div>
+</section></div>
 <script>
-const KEY='pointsCashManager_v4';
-const CLOUD_URL_KEY='pointsCashManager_cloudUrl';
-const DEFAULT_CLOUD_URL='https://script.google.com/macros/s/AKfycbwGfX1CkQOx5pNmFGKUACklssf5y8KWBuSP86hWUcYxf18Af0FQ3jS9Iin12SPBhlE/exec';
-const CLOUD_TOKEN_KEY='pointsCashManager_cloudToken';
-let cloudBooting=true;
-let state=JSON.parse(localStorage.getItem(KEY)||'null');
-if(!state){
-  const old=JSON.parse(localStorage.getItem('pointsCashManager_v2')||localStorage.getItem('pointsCashManager_v1')||'null');
-  state=old&&Array.isArray(old.entries)?{accounts:Array.isArray(old.accounts)&&old.accounts.length?old.accounts:['Account 1'],expenseNames:Array.isArray(old.expenseNames)?old.expenseNames:['General'],expenses:Array.isArray(old.expenses)?old.expenses:[],openingPointsSetting:old.openingPointsSetting,entries:old.entries.map(e=>({
-    ...e,
-    openingPoints:e.openingPoints!=null?Number(e.openingPoints):Number(e.pointsAvailable||0),
-    cashPointsDeposited:e.cashPointsDeposited!=null?Number(e.cashPointsDeposited):0
-  }))}:{accounts:['Account 1'],expenseNames:['General'],expenses:[],openingPointsSetting:null,entries:[]};
-if(state.openingPointsSetting===undefined) state.openingPointsSetting=null;
-if(state.pointChainSeq===undefined) state.pointChainSeq=1;
-if(state.currentPointChain===undefined) state.currentPointChain=state.pointChainSeq;
-state.entries.forEach((e,i)=>{
-  if(e.pointChain===undefined||e.pointChain===null) e.pointChain=1;
-  if(e.createdAt===undefined||e.createdAt===null) e.createdAt=Number(e.id)||Date.now()+i;
-});
-if(state.entries.length && !state.currentPointChain) state.currentPointChain=1;
-}
-let editingId=null;
-const $=id=>document.getElementById(id);
-const n=id=>parseFloat($(id).value)||0;
-const fmt=(x,d=3)=>Number(x||0).toLocaleString('en-IN',{maximumFractionDigits:d});
-const money=x=>'₹'+Number(x||0).toLocaleString('en-IN',{maximumFractionDigits:2});
-function saveState(){localStorage.setItem(KEY,JSON.stringify(state));if(!cloudBooting)syncToCloud()}
-function today(){return new Date().toISOString().slice(0,10)}
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function sortEntries(){state.entries.sort((a,b)=>a.date.localeCompare(b.date)||String(a.id).localeCompare(String(b.id)))}
-function ordered(excludeId=null){return [...state.entries].filter(e=>e.id!==excludeId).sort((a,b)=>a.date.localeCompare(b.date)||String(a.id).localeCompare(String(b.id)))}
-function firstEntry(){return ordered()[0]||null}
-function priorGlobal(date,id=null){const arr=ordered(id).filter(e=>e.date<=date);return arr.length?Number(arr[arr.length-1].totalPoints)||0:0}
-function priorCash(account,date,id=null){const arr=ordered(id).filter(e=>e.account===account&&e.date<=date);return arr.length?Number(arr[arr.length-1].cashAvailable)||0:0}
-function syncPointsField(){
-  const first=firstEntry();
-  const existing=editingId?state.entries.find(e=>e.id===editingId):null;
+const K='account_manager_v2';
+const DEFAULT_SYNC_URL='https://script.google.com/macros/s/AKfycbyGeGadIBcDkQhtVN3Y7IkXpNs7jO9N5S-2-3wXd2OrOudV3NmWPFSMQqmH5ruJ4BB-/exec';
+const SYNC_URL_KEY='account_manager_sync_url';
+const SYNC_TOKEN_KEY='account_manager_sync_token';
+let S=JSON.parse(localStorage.getItem(K)||'null')||{accounts:[],tx:[],expenseNames:[],expenses:[]},editTx=null,editEx=null;
+let syncBusy=false, initialSyncDone=false;
 
-  // While editing an existing entry, show that entry's original Points Available.
-  // The user may edit the first entry only; later entries remain linked to the
-  // previous entry and therefore their Points Available is read-only.
-  if(editingId && existing){
-    const chain=existing.pointChain??1;
-    const arr=state.entries
-      .filter(e=>(e.pointChain??1)===Number(chain))
-      .sort((a,b)=>Number(a.createdAt||a.id)-Number(b.createdAt||b.id));
-    const idx=arr.findIndex(e=>e.id===editingId);
-    $('pointsAvailable').readOnly=idx!==0;
-    $('pointsAvailable').value=idx>0
-      ?String(Number(arr[idx-1].totalPoints)||0)
-      :String(Number(existing.pointsAvailable??existing.openingPoints)||0);
-    return;
-  }
+const $=x=>document.getElementById(x),
+money=x=>'₹'+Number(x||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}),
+esc=x=>String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])),
+today=()=>new Date().toISOString().slice(0,10),
+saveS=()=>localStorage.setItem(K,JSON.stringify(S));
 
-  // New entry: if the current chain already has entries, the Home page must
-  // show the latest Total Points as Points Available and it must not be editable.
-  const currentChain=Number(state.currentPointChain||1);
-  const chainEntries=state.entries
-    .filter(e=>(e.pointChain??1)===currentChain)
-    .sort((a,b)=>Number(a.createdAt||a.id)-Number(b.createdAt||b.id));
+function getSyncUrl(){return ($('syncUrl').value||'').trim()}
+function getSyncToken(){return ($('syncToken').value||'').trim()}
+function syncStatus(t){$('syncStatus').textContent=t}
 
-  if(chainEntries.length){
-    const latest=chainEntries[chainEntries.length-1];
-    $('pointsAvailable').readOnly=true;
-    $('pointsAvailable').value=String(Number(latest.totalPoints)||0);
-    return;
-  }
+function balance(id,exclude){return S.tx.filter(t=>t.accountId===id&&t.id!==exclude).reduce((v,t)=>v+ +t.deposit-(+t.withdraw),0)}
 
-  // If Settings has created a new chain, its value is the starting balance.
-  // It is displayed on Home but cannot be manually changed there.
-  if(state.openingPointsSetting!==null && state.openingPointsSetting!==undefined){
-    $('pointsAvailable').readOnly=true;
-    $('pointsAvailable').value=String(Number(state.openingPointsSetting)||0);
-    return;
-  }
-
-  // No entries yet and no Settings balance: first entry is entered manually.
-  $('pointsAvailable').readOnly=false;
-  $('pointsAvailable').value='';
+function populate(){
+  let o=$('acc').value;
+  $('acc').innerHTML='<option value="">Select account</option>'+S.accounts.map(a=>'<option value="'+a.id+'">'+esc(a.name)+'</option>').join('');
+  if(S.accounts.some(a=>a.id===o))$('acc').value=o;
+  let e=$('ename').value;
+  $('ename').innerHTML='<option value="">Select expense</option>'+S.expenseNames.map(a=>'<option value="'+a.id+'">'+esc(a.name)+'</option>').join('');
+  if(S.expenseNames.some(a=>a.id===e))$('ename').value=e;
+  render()
 }
 
-function updateCashAvailable(){
-  const acc=$('account').value,date=$('date').value;
-  if(!acc||!date){$('cashAvailable').value='0';$('cashAvailableView').textContent='₹0';return}
-  const val=priorCash(acc,date,editingId)+n('cashDeposit')-n('cashWithdrawn');
-  $('cashAvailable').value=val.toFixed(2);$('cashAvailableView').textContent=money(val);
-}
-function openingBase(){ if(state.openingPointsSetting!==null && state.openingPointsSetting!==undefined && Number.isFinite(Number(state.openingPointsSetting))) return Number(state.openingPointsSetting); const first=firstEntry(); return first?Number(first.openingPoints!=null?first.openingPoints:first.pointsAvailable)||0:n('pointsAvailable'); }
-function currentPointsProfit(total){ const pa=n('pointsAvailable'); return Number(total||0)-pa; }
-function calc(){
-  syncPointsField();
-  const pa=n('pointsAvailable'),cpp=n('cashPerPoint'),dep=n('cashDeposit'),wd=n('cashWithdrawn'),rate=n('pointDepositRate'),cashPts=n('cashPointsDeposited'),depCommPct=n('cashDepositCommission'),ptsCommPct=n('cashPointsCommission');
-  const poc=cpp>0?dep/cpp:0,remaining=pa-poc,fromDeposit=rate>0?cashPts/rate:0,total=remaining+fromDeposit;
-  const depComm=dep*depCommPct/100,ptsComm=cashPts*ptsCommPct/100;
-  const cashProfit=wd-cashPts-depComm-ptsComm;
-  const pointsPL=currentPointsProfit(total);
-  const pointsValue=pointsPL*rate;
-  $('pointsOfCash').textContent=fmt(poc);$('remainingPoints').textContent=fmt(remaining);$('pointsFromDeposit').textContent=fmt(fromDeposit);$('totalPoints').textContent=fmt(total);$('cashDepositCommissionValue').textContent=money(depComm);$('cashPointsCommissionValue').textContent=money(ptsComm);
-  $('cashProfit').textContent=money(cashProfit);$('cashProfit').className='profit-number '+(cashProfit<0?'negative':'positive');
-  $('pointsProfit').textContent=fmt(pointsPL);$('pointsProfit').className='profit-number '+(pointsPL<0?'negative':'positive');
-  $('pointsValue').textContent=money(pointsValue);$('pointsValue').className='profit-number '+(pointsValue<0?'negative':'positive');
-  $('pointsValueRow').classList.toggle('hidden',!$('usingPoints').checked);
-  return {poc,remaining,fromDeposit,total,cashProfit,pointsPL,pointsValue,depComm,ptsComm};
-}
-['pointsAvailable','cashPerPoint','cashDeposit','cashDepositCommission','cashWithdrawn','pointDepositRate','cashPointsDeposited','cashPointsCommission'].forEach(id=>$(id).addEventListener('input',()=>{calc();updateCashAvailable()}));
-$('usingPoints').addEventListener('change',calc);$('account').addEventListener('change',()=>{updateCashAvailable();calc()});$('date').addEventListener('change',()=>{syncPointsField();updateCashAvailable();calc()});
-
-
-function getCloudUrl(){return (localStorage.getItem(CLOUD_URL_KEY)||DEFAULT_CLOUD_URL).trim()}
-function getCloudToken(){return (localStorage.getItem(CLOUD_TOKEN_KEY)||'').trim()}
-function setCloudStatus(msg,ok=false){const el=$('cloudStatus');if(el){el.textContent=msg;el.style.color=ok?'#078a55':''}}
-function syncToCloud(){
- const url=getCloudUrl();if(!url){setCloudStatus('Google Sheets not connected.');return}
- try{
-  const iframe=$('cloudPostFrame')||(()=>{const f=document.createElement('iframe');f.name='cloudPostFrame';f.id='cloudPostFrame';f.style.display='none';document.body.appendChild(f);return f})();
-  const form=document.createElement('form');form.method='POST';form.action=url;form.target='cloudPostFrame';form.style.display='none';
-  const payload=document.createElement('input');payload.name='payload';payload.value=JSON.stringify(state);form.appendChild(payload);
-  const token=document.createElement('input');token.name='token';token.value=getCloudToken();form.appendChild(token);
-  document.body.appendChild(form);form.submit();form.remove();setCloudStatus('Saved to Google Sheet • '+new Date().toLocaleTimeString(),true);
- }catch(e){setCloudStatus('Google Sheets save failed: '+e.message)}
-}
-function cloudPull(){
- const url=getCloudUrl();if(!url){cloudBooting=false;setCloudStatus('Google Sheets not connected.');return}
- setCloudStatus('Loading data from Google Sheet…');
- const cb='pcmCloud_'+Date.now();let script;
- window[cb]=function(data){try{if(data&&data.empty){cloudBooting=false;saveLocalOnly();syncToCloud();setCloudStatus('Google Sheet was empty — local data uploaded.',true)}else if(data&&Array.isArray(data.entries)){state={accounts:Array.isArray(data.accounts)&&data.accounts.length?data.accounts:['Account 1'],expenseNames:Array.isArray(data.expenseNames)?data.expenseNames:['General'],expenses:Array.isArray(data.expenses)?data.expenses:[],openingPointsSetting:data.openingPointsSetting!==undefined?data.openingPointsSetting:null,pointChainSeq:data.pointChainSeq||1,currentPointChain:data.currentPointChain!==undefined?data.currentPointChain:(data.pointChainSeq||1),entries:Array.isArray(data.entries)?data.entries:[]};
-state.entries.forEach((e,i)=>{if(e.pointChain===undefined||e.pointChain===null)e.pointChain=1;if(e.createdAt===undefined||e.createdAt===null)e.createdAt=Number(e.id)||Date.now()+i;});
-recalculateAll();saveLocalOnly();populateAccounts();populateExpenseNames();renderHistory();renderExpenses();resetForm();cloudBooting=false;setCloudStatus('Google Sheet data loaded successfully.',true)}else{cloudBooting=false;setCloudStatus('No cloud data found. Local data is kept.')}}finally{delete window[cb];if(script)script.remove()}};
- script=document.createElement('script');script.src=url+(url.includes('?')?'&':'?')+'action=get&token='+encodeURIComponent(getCloudToken())+'&callback='+cb+'&t='+Date.now();script.onerror=()=>{setCloudStatus('Google Sheet load failed. Local data is kept.');delete window[cb];cloudBooting=false};document.body.appendChild(script);
-}
-function saveLocalOnly(){localStorage.setItem(KEY,JSON.stringify(state))}
-
-function resetForm(){
-  editingId=null;$('editBadge').classList.add('hidden');$('saveBtn').textContent='Save Entry';$('date').value=today();$('pointsAvailable').value='';$('cashPerPoint').value='';$('cashDeposit').value='';$('cashDepositCommission').value='';$('cashWithdrawn').value='';$('pointDepositRate').value='';$('cashPointsDeposited').value='';$('cashPointsCommission').value='';$('usingPoints').checked=false;
-  if(state.accounts.length)$('account').value=state.accounts[0];syncPointsField();updateCashAvailable();calc();
-}
-$('resetBtn').onclick=resetForm;
-
-function recalculateAll(){
-  // Cash balances remain chronological and account-specific.
-  sortEntries();
-  const cashPrev={};
-  for(const e of state.entries){
-    const prev=cashPrev[e.account]||0;
-    e.cashAvailable=prev+Number(e.cashDeposit||0)-Number(e.cashWithdrawn||0);
-    cashPrev[e.account]=e.cashAvailable;
-    e.cashProfit=Number(e.cashWithdrawn||0)-Number(e.cashPointsDeposited||0)-Number(e.cashDeposit||0)*Number(e.cashDepositCommission||0)/100-Number(e.cashPointsDeposited||0)*Number(e.cashPointsCommission||0)/100;
-  }
-
-  // Points are calculated in independent chains. Changing the Points Available
-  // setting creates a new chain, so old entries are never recalculated from the
-  // new setting. Entries added after the change use the new balance and then
-  // carry their Total Points forward to later entries in that same chain.
-  const groups={};
-  for(const e of state.entries){
-    const chain=e.pointChain===undefined||e.pointChain===null?1:e.pointChain;
-    (groups[chain]||(groups[chain]=[])).push(e);
-  }
-  for(const chainKey of Object.keys(groups)){
-    const arr=groups[chainKey].sort((a,b)=>Number(a.createdAt||a.id)-Number(b.createdAt||b.id));
-    const chain=Number(chainKey);
-    let prev;
-    if(chain===Number(state.currentPointChain||1) && state.openingPointsSetting!==null && state.openingPointsSetting!==undefined){
-      prev=Number(state.openingPointsSetting)||0;
-    }else{
-      // Preserve the first historical entry's original opening balance.
-      prev=Number(arr[0].pointsAvailable!=null?arr[0].pointsAvailable:(arr[0].openingPoints||0))||0;
-    }
-    arr.forEach((e,i)=>{
-      e.pointsAvailable=i===0?prev:Number(prev)||0;
-      e.pointsOfCash=Number(e.cashPerPoint)>0?Number(e.cashDeposit||0)/Number(e.cashPerPoint):0;
-      e.remainingPoints=e.pointsAvailable-e.pointsOfCash;
-      e.pointsFromDeposit=Number(e.pointDepositRate)>0?Number(e.cashPointsDeposited||0)/Number(e.pointDepositRate):0;
-      e.totalPoints=e.remainingPoints+e.pointsFromDeposit;
-      e.pointsProfitLoss=e.totalPoints-(Number(e.openingPointsBase)!=null?Number(e.openingPointsBase):prev);
-      // For the first entry in a chain, store its chain opening base. This keeps
-      // historical points profit/loss independent from later setting changes.
-      if(i===0) e.openingPointsBase=e.pointsAvailable;
-      else if(e.openingPointsBase===undefined) e.openingPointsBase=arr[0].openingPointsBase!=null?arr[0].openingPointsBase:arr[0].pointsAvailable;
-      e.pointsProfitLoss=e.totalPoints-Number(e.openingPointsBase||0);
-      e.pointsValue=e.pointsProfitLoss*Number(e.pointDepositRate||0);
-      prev=e.totalPoints;
-    });
-  }
+function render(){
+  renderTx();renderSummary();renderExpenses();
+  $('grand').textContent=money(S.accounts.reduce((v,a)=>v+balance(a.id),0));
+  $('accounts').innerHTML=S.accounts.map(a=>'<div class="row"><input value="'+esc(a.name)+'" onchange="renameA(\''+a.id+'\',this.value)"><button class="danger" onclick="deleteA(\''+a.id+'\')">Delete</button></div>').join('')||'<p class="note">No active accounts.</p>';
+  $('enames').innerHTML=S.expenseNames.map(a=>'<div class="row"><input value="'+esc(a.name)+'" onchange="renameE(\''+a.id+'\',this.value)"><button class="danger" onclick="deleteE(\''+a.id+'\')">Delete</button></div>').join('')||'<p class="note">No expense names.</p>'
 }
 
-$('saveBtn').onclick=()=>{
-  const date=$('date').value,account=$('account').value;
-  if(!date||!account){alert('Please select Date and Account Name.');return}
-  syncPointsField();const c=calc();
-  const existing=editingId?state.entries.find(x=>x.id===editingId):null;const e={id:editingId||String(Date.now()),createdAt:existing?.createdAt||Date.now(),pointChain:existing?.pointChain??(state.currentPointChain||1),date,account,pointsAvailable:n('pointsAvailable'),openingPoints:(editingId?existing?.openingPoints:n('pointsAvailable')),openingPointsBase:existing?.openingPointsBase,cashAvailable:n('cashAvailable'),cashPerPoint:n('cashPerPoint'),cashDeposit:n('cashDeposit'),cashDepositCommission:n('cashDepositCommission'),cashWithdrawn:n('cashWithdrawn'),pointsOfCash:c.poc,remainingPoints:c.remaining,pointDepositRate:n('pointDepositRate'),cashPointsDeposited:n('cashPointsDeposited'),cashPointsCommission:n('cashPointsCommission'),pointsFromDeposit:c.fromDeposit,totalPoints:c.total,usingPoints:$('usingPoints').checked,cashProfit:c.cashProfit,pointsProfitLoss:c.pointsPL,pointsValue:c.pointsValue};
-  if(editingId){const i=state.entries.findIndex(x=>x.id===editingId);if(i>=0){e.openingPoints=state.entries[i].openingPoints;state.entries[i]=e}}else state.entries.push(e);
-  recalculateAll();saveState();alert(editingId?'Entry updated successfully.':'Entry saved successfully.');resetForm();showTab('history');renderHistory();
-};
-
-window.editEntry=id=>{
-  const e=state.entries.find(x=>x.id===id);if(!e)return;editingId=id;$('editBadge').classList.remove('hidden');$('saveBtn').textContent='Update Entry';$('date').value=e.date;$('account').value=e.account;
-  $('pointsAvailable').value=e.pointsAvailable;$('cashPerPoint').value=e.cashPerPoint;$('cashDeposit').value=e.cashDeposit;$('cashDepositCommission').value=e.cashDepositCommission||0;$('cashWithdrawn').value=e.cashWithdrawn;$('pointDepositRate').value=e.pointDepositRate;$('cashPointsDeposited').value=e.cashPointsDeposited||0;$('cashPointsCommission').value=e.cashPointsCommission||0;$('usingPoints').checked=!!e.usingPoints;
-  syncPointsField();updateCashAvailable();calc();showTab('entry');scrollTo({top:0,behavior:'smooth'});
-};
-window.deleteEntry=id=>{if(!confirm('Delete this entry?'))return;state.entries=state.entries.filter(e=>e.id!==id);recalculateAll();saveState();renderHistory()};
-
-
-function populateExpenseNames(){
- const cur=$('expenseName').value;$('expenseName').innerHTML='<option value="">Select expense</option>'+state.expenseNames.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');if(state.expenseNames.includes(cur))$('expenseName').value=cur;renderExpenseNames();
+function renderTx(){
+  let a=[...S.tx].sort((x,y)=>y.date.localeCompare(x.date)||y.id.localeCompare(x.id));
+  $('tx').innerHTML=a.length?a.map(t=>{
+    let ac=S.accounts.find(x=>x.id===t.accountId),name=ac?.name||t.snap||'[Deleted account]';
+    return '<tr><td>'+t.date+'</td><td>'+esc(name)+'</td><td>'+money(t.deposit)+'</td><td>'+money(t.withdraw)+'</td><td>'+money(balance(t.accountId))+'</td><td><button class="secondary" onclick="editT(\''+t.id+'\')">Edit</button> <button class="danger" onclick="delT(\''+t.id+'\')">Delete</button></td></tr>'
+  }).join(''):'<tr><td colspan="6">No transactions.</td></tr>'
 }
-function renderExpenseNames(){
- $('expenseNamesList').innerHTML=state.expenseNames.map((x,i)=>`<div class="setting-row"><input value="${esc(x)}" onchange="renameExpenseName(${i},this.value)"><button class="btn danger" onclick="removeExpenseName(${i})">Delete</button></div>`).join('');
+
+function renderSummary(){
+  let rows=S.accounts.map(a=>({name:a.name,id:a.id,b:balance(a.id),d:S.tx.filter(t=>t.accountId===a.id).reduce((v,t)=>v+ +t.deposit,0),w:S.tx.filter(t=>t.accountId===a.id).reduce((v,t)=>v+ +t.withdraw,0),n:S.tx.filter(t=>t.accountId===a.id).length,status:'Active'}));
+  let ids=[...new Set(S.tx.map(t=>t.accountId).filter(id=>!S.accounts.some(a=>a.id===id)))];
+  ids.forEach(id=>{let q=S.tx.filter(t=>t.accountId===id),d=q.reduce((v,t)=>v+ +t.deposit,0),w=q.reduce((v,t)=>v+ +t.withdraw,0);rows.push({name:q[0]?.snap||'[Deleted account]',b:d-w,d,w,n:q.length,status:'Deleted from dropdown'})});
+  $('sum').innerHTML=rows.map(r=>'<tr><td>'+esc(r.name)+'</td><td>'+money(r.b)+'</td><td>'+money(r.d)+'</td><td>'+money(r.w)+'</td><td>'+r.n+'</td><td>'+r.status+'</td></tr>').join('')||'<tr><td colspan="6">No accounts.</td></tr>'
 }
-function expenseTotals(dateFilter=''){
- const ex=state.expenses||[];const ep=ex.filter(x=>!dateFilter||x.date===dateFilter).reduce((s,x)=>s+Number(x.amount||0),0);
- const cp=state.entries.filter(x=>!dateFilter||x.date===dateFilter).reduce((s,x)=>s+Number(x.cashProfit||0),0);return {expenses:ep,cashProfit:cp,remaining:cp-ep};
-}
+
 function renderExpenses(){
- const d=$('expenseHistoryDate').value;const arr=(state.expenses||[]).filter(x=>!d||x.date===d).sort((a,b)=>b.date.localeCompare(a.date)||String(b.id).localeCompare(String(a.id)));
- $('expenseBody').innerHTML=arr.length?arr.map(x=>`<tr><td>${x.date}</td><td class="name">${esc(x.name)}</td><td>${money(x.amount)}</td><td><button class="btn secondary" onclick="editExpense('${x.id}')">Edit</button> <button class="btn danger" onclick="deleteExpense('${x.id}')">Delete</button></td></tr>`).join(''):`<tr><td colspan="4" class="empty">No expenses found.</td></tr>`;
- const t=expenseTotals(d);$('expenseSummary').innerHTML=`<div class="box"><div class="label">Cash Profit${d?' (Selected Date)':''}</div><div class="num">${money(t.cashProfit)}</div></div><div class="box"><div class="label">Total Expenses</div><div class="num negative">${money(t.expenses)}</div></div><div class="box"><div class="label">Cash Remaining</div><div class="num ${t.remaining<0?'negative':'positive'}">${money(t.remaining)}</div></div>`;
+  $('totalExp').textContent=money(S.expenses.reduce((v,e)=>v+ +e.amount,0));
+  let a=[...S.expenses].sort((x,y)=>y.date.localeCompare(x.date));
+  $('ex').innerHTML=a.length?a.map(e=>{let n=S.expenseNames.find(x=>x.id===e.nameId),name=n?.name||e.snap||'[Deleted name]';return '<tr><td>'+e.date+'</td><td>'+esc(name)+'</td><td>'+money(e.amount)+'</td><td><button class="secondary" onclick="editExpense(\''+e.id+'\')">Edit</button> <button class="danger" onclick="delExpense(\''+e.id+'\')">Delete</button></td></tr>'}).join(''):'<tr><td colspan="4">No expenses.</td></tr>'
 }
-$('saveExpenseBtn').onclick=()=>{const date=$('expenseDate').value,name=$('expenseName').value,amount=n('expenseAmount');if(!date||!name||amount<=0){alert('Date, Expense Name and Amount fill karein.');return}state.expenses.push({id:String(Date.now()),date,name,amount});saveState();alert('Expense saved successfully.');$('expenseDate').value=today();$('expenseName').value='';$('expenseAmount').value='';renderExpenses()};
-$('clearExpenseBtn').onclick=()=>{$('expenseDate').value=today();$('expenseName').value='';$('expenseAmount').value=''};
-$('expenseHistoryDate').onchange=renderExpenses;$('clearExpenseFilter').onclick=()=>{$('expenseHistoryDate').value='';renderExpenses()};
-window.deleteExpense=id=>{if(!confirm('Delete this expense?'))return;state.expenses=state.expenses.filter(x=>x.id!==id);saveState();renderExpenses()};
-window.editExpense=id=>{const e=state.expenses.find(x=>x.id===id);if(!e)return;const d=prompt('Date (YYYY-MM-DD):',e.date);if(d===null)return;const name=prompt('Expense name:',e.name);if(name===null)return;const a=prompt('Amount:',e.amount);if(a===null)return;const amount=parseFloat(a);if(!d||!name.trim()||!Number.isFinite(amount)||amount<=0){alert('Invalid expense.');return}e.date=d;e.name=name.trim();e.amount=amount;saveState();renderExpenses()};
-window.renameExpenseName=(i,v)=>{v=v.trim();if(!v){renderExpenseNames();return}if(state.expenseNames.some((x,j)=>j!==i&&x.toLowerCase()===v.toLowerCase())){alert('Expense name already exists.');renderExpenseNames();return}const old=state.expenseNames[i];state.expenseNames[i]=v;saveState();populateExpenseNames();renderExpenses()};
-window.removeExpenseName=i=>{if(!confirm('Delete this expense name? Old expense entries will remain.'))return;state.expenseNames.splice(i,1);saveState();populateExpenseNames()};
-$('addExpenseName').onclick=()=>{const v=$('newExpenseName').value.trim();if(!v)return;if(state.expenseNames.some(x=>x.toLowerCase()===v.toLowerCase())){alert('Expense name already exists.');return}state.expenseNames.push(v);$('newExpenseName').value='';saveState();populateExpenseNames()};
 
-function populateAccounts(){
-  [$('account'),$('historyAccount')].forEach(s=>{const cur=s.value;s.innerHTML='<option value="">Select account</option>'+state.accounts.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('');if(state.accounts.includes(cur))s.value=cur});
-  renderSettings();
+async function readSheet(){
+  if(syncBusy)return false;
+  const url=getSyncUrl();
+  if(!url){syncStatus('Google Sheets URL is missing.');return false}
+  syncBusy=true; syncStatus('Reading existing data from Google Sheet…');
+  try{
+    const u=new URL(url);
+    u.searchParams.set('action','load');
+    if(getSyncToken())u.searchParams.set('token',getSyncToken());
+    const r=await fetch(u.toString(),{method:'GET',cache:'no-store'});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const out=await r.json();
+    if(!out || out.ok===false)throw new Error(out?.error||'Sheet read failed');
+    const d=out.data;
+    if(!d || !Array.isArray(d.accounts)||!Array.isArray(d.tx)||!Array.isArray(d.expenseNames)||!Array.isArray(d.expenses)){
+      throw new Error('Invalid data returned by Apps Script');
+    }
+    // IMPORTANT: only after a successful Sheet READ do we replace local data.
+    S={accounts:d.accounts,tx:d.tx,expenseNames:d.expenseNames,expenses:d.expenses};
+    saveS(); populate(); initialSyncDone=true;
+    syncStatus('✓ Sheet data loaded. No rewrite was done during connection.');
+    return true;
+  }catch(e){
+    initialSyncDone=false;
+    syncStatus('Sheet read failed: '+e.message+'. No Sheet data was changed.');
+    return false;
+  }finally{syncBusy=false}
 }
-function renderHistory(){
-  let arr=[...state.entries].sort((a,b)=>b.date.localeCompare(a.date)||String(b.id).localeCompare(String(a.id)));const d=$('historyDate').value,a=$('historyAccount').value;if(d)arr=arr.filter(e=>e.date===d);if(a)arr=arr.filter(e=>e.account===a);
-  $('historyBody').innerHTML=arr.length?arr.map(e=>`<tr><td>${e.date}</td><td class="name">${esc(e.account)}</td><td>${fmt(e.pointsAvailable)}</td><td>${money(e.cashAvailable)}</td><td>${fmt(e.cashPerPoint)}</td><td>${money(e.cashDeposit)}</td><td>${money(e.cashWithdrawn)}</td><td>${fmt(e.pointsOfCash)}</td><td>${fmt(e.pointDepositRate)}</td><td>${money(e.cashPointsDeposited)}</td><td>${fmt(e.pointsFromDeposit)}</td><td>${fmt(e.totalPoints)}</td><td class="${e.cashProfit<0?'negative':'positive'}">${money(e.cashProfit)}</td><td class="${e.pointsProfitLoss<0?'negative':'positive'}">${fmt(e.pointsProfitLoss)}</td><td class="${e.pointsValue<0?'negative':'positive'}">${money(e.pointsValue)}</td><td><button class="btn secondary" onclick="editEntry('${e.id}')">Edit</button> <button class="btn danger" onclick="deleteEntry('${e.id}')">Delete</button></td></tr>`).join(''):`<tr><td colspan="16" class="empty">No saved entries found.</td></tr>`;
-  const cashProfit=arr.reduce((s,e)=>s+Number(e.cashProfit||0),0),net=arr.reduce((s,e)=>s+Number(e.cashDeposit||0)-Number(e.cashWithdrawn||0),0),latest=arr.length?Number(arr[0].totalPoints||0):0;
-  $('summary').innerHTML=`<div class="box"><div class="label">Entries</div><div class="num">${arr.length}</div></div><div class="box"><div class="label">Total Cash Profit</div><div class="num ${cashProfit<0?'negative':'positive'}">${money(cashProfit)}</div></div><div class="box"><div class="label">Net Cash Movement</div><div class="num">${money(net)}</div></div><div class="box"><div class="label">Latest Total Points</div><div class="num">${fmt(latest)}</div></div>`;
-}
-function renderSettings(){
-  $('openingPointsSetting').value=state.openingPointsSetting!==null&&state.openingPointsSetting!==undefined?state.openingPointsSetting:(firstEntry()?openingBase():'');
-  $('accountsList').innerHTML=state.accounts.map((a,i)=>`<div class="setting-row"><input value="${esc(a)}" onchange="renameAccount(${i},this.value)"><button class="btn danger" onclick="removeAccount(${i})">Delete</button></div>`).join('');
-}
-window.renameAccount=(i,v)=>{
-  v=v.trim();if(!v){renderSettings();return}if(state.accounts.some((a,j)=>j!==i&&a.toLowerCase()===v.toLowerCase())){alert('This account already exists.');renderSettings();return}
-  state.accounts[i]=v;saveState();populateAccounts();renderHistory();
-};
-window.removeAccount=i=>{
-  const old=state.accounts[i];if(old==null)return;
-  if(!confirm('Delete this account name from Settings? Its saved entries will NOT be deleted.'))return;
-  state.accounts.splice(i,1);saveState();populateAccounts();
-  if(!$('account').value&&state.accounts.length)$('account').value=state.accounts[0];
-  updateCashAvailable();calc();
-};
-$('saveOpeningPointsBtn').onclick=()=>{
-  const v=parseFloat($('openingPointsSetting').value);
-  if(!Number.isFinite(v)||v<0){alert('Valid points balance enter karein.');return}
-  state.openingPointsSetting=v;
-  state.pointChainSeq=Number(state.pointChainSeq||1)+1;
-  state.currentPointChain=state.pointChainSeq;
-  // IMPORTANT: do not recalculate existing entries here. The new balance is
-  // only the starting balance for entries saved from this point onward.
-  saveState();
-  renderSettings();
-  resetForm();
-  alert('Points Available balance updated. Purani entries unchanged rahengi. Ab se save ki gayi entries is balance se calculate hongi.');
-};
-$('addAccount').onclick=()=>{const v=$('newAccount').value.trim();if(!v)return;if(state.accounts.some(a=>a.toLowerCase()===v.toLowerCase())){alert('Account already exists.');return}state.accounts.push(v);$('newAccount').value='';saveState();populateAccounts()};
-$('historyDate').onchange=renderHistory;$('historyAccount').onchange=renderHistory;$('clearFilter').onclick=()=>{$('historyDate').value='';$('historyAccount').value='';renderHistory()};
-$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='points-cash-backup.json';a.click();URL.revokeObjectURL(a.href)};
-$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.accounts)||!Array.isArray(x.entries))throw Error();x.expenseNames=Array.isArray(x.expenseNames)?x.expenseNames:['General'];x.expenses=Array.isArray(x.expenses)?x.expenses:[];if(confirm('Import will replace current app data. Continue?')){state=x;recalculateAll();saveState();populateAccounts();populateExpenseNames();renderHistory();renderExpenses();resetForm();alert('Backup imported.')}}catch(e){alert('Invalid backup file.')}ev.target.value=''};
 
-$('connectCloudBtn').onclick=()=>{const url=$('cloudUrl').value.trim(),token=$('cloudToken').value.trim();if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec(?:\?.*)?$/.test(url)){alert('Google Apps Script ka /exec Web App URL paste karein.');return}localStorage.setItem(CLOUD_URL_KEY,url);localStorage.setItem(CLOUD_TOKEN_KEY,token);cloudBooting=true;cloudPull()};
-$('syncCloudBtn').onclick=()=>{syncToCloud()};
-$('cloudUrl').value=getCloudUrl();$('cloudToken').value=getCloudToken();
+async function writeSheet(){
+  if(!initialSyncDone){alert('Sheet data has not been read yet. Read from Sheet first; nothing will be rewritten.');return false}
+  const url=getSyncUrl();
+  if(!url){syncStatus('Google Sheets URL is missing.');return false}
+  syncBusy=true;syncStatus('Saving changes to Google Sheet…');
+  try{
+    const payload={action:'save',data:S};
+    if(getSyncToken())payload.token=getSyncToken();
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const out=await r.json();
+    if(!out || out.ok===false)throw new Error(out?.error||'Sheet save failed');
+    // Use returned saved data if Apps Script sends it.
+    if(out.data && Array.isArray(out.data.accounts)){S=out.data;saveS();populate()}
+    syncStatus('✓ Saved to Google Sheet.');
+    return true;
+  }catch(e){
+    syncStatus('Sheet save failed: '+e.message+'. Local data is kept.');
+    return false;
+  }finally{syncBusy=false}
+}
 
-function showTab(name){document.querySelectorAll('.tab-page').forEach(x=>x.classList.toggle('hidden',x.id!==name));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===name));if(name==='history')renderHistory();if(name==='expenses'){if(!$('expenseDate').value)$('expenseDate').value=today();renderExpenses()}}
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
-recalculateAll();$('date').value=today();$('expenseDate').value=today();populateAccounts();populateExpenseNames();resetForm();renderHistory();renderExpenses();cloudPull();
-</script>
-</body>
-</html>
+function afterLocalChange(){
+  saveS();render();
+  if(initialSyncDone)writeSheet();
+}
+
+$('save').onclick=()=>{
+  let d=$('date').value,id=$('acc').value,dep=+$('dep').value||0,w=+$('withd').value||0;
+  if(!d||!id||(dep===0&&w===0))return alert('Fill Date, Account and Deposit or Withdraw.');
+  let a=S.accounts.find(x=>x.id===id),o={id:editTx||crypto.randomUUID(),date:d,accountId:id,snap:a.name,deposit:dep,withdraw:w};
+  if(editTx)S.tx[S.tx.findIndex(x=>x.id===editTx)]=o;else S.tx.push(o);
+  editTx=null;$('save').textContent='Save';clearT();afterLocalChange()
+};
+
+function clearT(){$('date').value=today();$('acc').value='';$('dep').value='';$('withd').value=''}
+$('clear').onclick=()=>{editTx=null;$('save').textContent='Save';clearT()};
+window.editT=id=>{let t=S.tx.find(x=>x.id===id);editTx=id;$('date').value=t.date;$('acc').value=t.accountId;$('dep').value=t.deposit;$('withd').value=t.withdraw;$('save').textContent='Update';show('home')};
+window.delT=id=>{if(confirm('Delete transaction?')){S.tx=S.tx.filter(x=>x.id!==id);afterLocalChange()}};
+
+$('esave').onclick=()=>{
+  let d=$('edate').value,n=$('ename').value,a=+$('eamt').value||0;
+  if(!d||!n||a<=0)return alert('Fill all expense fields.');
+  let x=S.expenseNames.find(q=>q.id===n),o={id:editEx||crypto.randomUUID(),date:d,nameId:n,snap:x.name,amount:a};
+  if(editEx)S.expenses[S.expenses.findIndex(x=>x.id===editEx)]=o;else S.expenses.push(o);
+  editEx=null;$('esave').textContent='Save Expense';clearE();afterLocalChange()
+};
+function clearE(){$('edate').value=today();$('ename').value='';$('eamt').value=''}
+$('eclear').onclick=()=>{editEx=null;$('esave').textContent='Save Expense';clearE()};
+window.editExpense=id=>{let e=S.expenses.find(x=>x.id===id);editEx=id;$('edate').value=e.date;$('ename').value=e.nameId;$('eamt').value=e.amount;$('esave').textContent='Update Expense';show('expenses')};
+window.delExpense=id=>{if(confirm('Delete expense?')){S.expenses=S.expenses.filter(x=>x.id!==id);afterLocalChange()}};
+
+$('addAcc').onclick=()=>{let n=$('newAcc').value.trim();if(!n)return;if(S.accounts.some(a=>a.name.toLowerCase()===n.toLowerCase()))return alert('Active account already exists.');S.accounts.push({id:crypto.randomUUID(),name:n});$('newAcc').value='';afterLocalChange()};
+window.deleteA=id=>{if(confirm('Remove only from dropdown? Old data stays.')){S.accounts=S.accounts.filter(a=>a.id!==id);afterLocalChange()}};
+window.renameA=(id,n)=>{n=n.trim();if(!n)return populate();let a=S.accounts.find(x=>x.id===id);if(a)a.name=n;afterLocalChange()};
+$('addEN').onclick=()=>{let n=$('newEN').value.trim();if(!n)return;S.expenseNames.push({id:crypto.randomUUID(),name:n});$('newEN').value='';afterLocalChange()};
+window.deleteE=id=>{S.expenseNames=S.expenseNames.filter(x=>x.id!==id);afterLocalChange()};
+window.renameE=(id,n)=>{let a=S.expenseNames.find(x=>x.id===id);if(a)a.name=n.trim();afterLocalChange()};
+
+function show(p){document.querySelectorAll('section').forEach(x=>x.classList.toggle('hidden',x.id!==p));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.p===p));render()}
+document.querySelectorAll('.tab').forEach(x=>x.onclick=()=>show(x.dataset.p));
+
+$('syncUrl').value=localStorage.getItem(SYNC_URL_KEY)||DEFAULT_SYNC_URL;
+$('syncToken').value=localStorage.getItem(SYNC_TOKEN_KEY)||'';
+$('syncUrl').onchange=()=>localStorage.setItem(SYNC_URL_KEY,$('syncUrl').value.trim());
+$('syncToken').onchange=()=>localStorage.setItem(SYNC_TOKEN_KEY,$('syncToken').value.trim());
+$('syncNow').onclick=async()=>{localStorage.setItem(SYNC_URL_KEY,getSyncUrl());localStorage.setItem(SYNC_TOKEN_KEY,getSyncToken());await readSheet()};
+
+$('export').onclick=()=>{let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='account-manager-backup.json';a.click()};
+$('importBtn').onclick=()=>$('file').click();
+$('file').onchange=async e=>{try{S=JSON.parse(await e.target.files[0].text());afterLocalChange()}catch{alert('Invalid backup')}};
+
+$('date').value=today();$('edate').value=today();populate();
+
+// CRITICAL STARTUP ORDER:
+// 1) Do NOT POST.
+// 2) Read the current Sheet.
+// 3) Replace local state only after a valid Sheet response.
+// 4) Only future user changes may POST.
+(async()=>{await readSheet()})();
+</script></body></html>
